@@ -4,6 +4,7 @@ INCLUDE 'EMU8086.INC'
 .DATA
     MAX DB 0
     MIN DB 255
+    AVG DW 0
     ARR DB 1,20,10,14,20,66,71,10,30,100
     
 .CODE
@@ -20,6 +21,11 @@ MAIN PROC
     MOV CX,10
     
     CALL MINIMUM
+    
+    XOR BX,BX
+    MOV CX,10
+    
+    CALL AVERAGE
     
     MOV AH,4CH
     INT 21H
@@ -69,7 +75,33 @@ MINIMUM PROC
     CALL OUTDEC
     PRINTN
     
+    RET
 MINIMUM ENDP
+
+AVERAGE PROC
+   
+    FOR_SUM:
+        MOV AL,ARR[BX]
+        XOR AH,AH
+        
+        ADD AVG,AX        ;AVERAGE = AVERAGE + AX
+        
+        NEXT2:
+        ADD BX,1
+    
+    LOOP FOR_SUM
+    
+    XOR DX,DX
+    MOV AX,AVG
+    MOV BX,10
+    IDIV BX
+    
+    PRINT "AVERAGE:"
+    CALL OUTDEC
+    PRINTN
+    
+    RET
+AVERAGE ENDP
 
       
 OUTDEC PROC
